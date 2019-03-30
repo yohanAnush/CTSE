@@ -60,4 +60,35 @@ let getFromCollection = (collectionName, identifier) => {
   });
 };
 
-module.exports = { saveToCollection, getFromCollection };
+/**
+ * Retrieves all entries/documents in a collection.
+ * Originally, the FireStore function will return a snapshot, which is a set of,
+ * documents. To access data in each document use,
+ * obj.data() method.
+ *
+ * @param {String} collectionName: Name of the collection in FireStore.
+ * @returns {Array}
+ */
+let getAllFromCollection = collectionName => {
+  return new Promise((resolve, reject) => {
+    var documentReference = db.collection(collectionName);
+
+    documentReference
+      .get()
+      .then(snapshot => {
+        // snapshot is a collection of documents.
+        // use .data() method to get data of each document.
+        users = [];
+        snapshot.forEach(document => {
+          users.push(document.data());
+        });
+
+        resolve(users);
+      })
+      .catch(error => {
+        reject(error);
+      });
+  });
+};
+
+module.exports = { saveToCollection, getFromCollection, getAllFromCollection };
