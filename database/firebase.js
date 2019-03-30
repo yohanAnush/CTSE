@@ -33,6 +33,13 @@ let saveToCollection = (collectionName, identifier, data) => {
   });
 };
 
+/**
+ * Retrieves a document/entry from FireStore.
+ *
+ * @param {String} collectionName: Name of the collection in FireStore.
+ * @param {String} identifier: Sort of like the primary key that identifies our entry/document.
+ * @returns {Object}
+ */
 let getFromCollection = (collectionName, identifier) => {
   return new Promise((resolve, reject) => {
     var documentReference = db.collection(collectionName).doc(identifier);

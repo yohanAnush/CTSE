@@ -1,0 +1,5 @@
+# Prettier formats the code.
+# Files/directories in this file will be ignored when prettier is scanning.
+
+# Libraries/dependencies.
+./node_modules
