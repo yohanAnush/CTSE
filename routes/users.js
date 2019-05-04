@@ -12,23 +12,15 @@ const router = express.Router();
 /* GET all users. */
 router.get('/', (req, res, next) => {
   db.getAllFromCollection('Users')
-    .then(data => {
-      res.status(200).send({ Message: data });
-    })
-    .catch(reject => {
-      res.status(404).send({ Message: reject });
-    });
+    .then(data => { res.status(200).send({ Message: data }); })
+    .catch(reject => { res.status(404).send({ Message: reject }); });
 });
 
 /* GET specific user. */
 router.get('/:username', (req, res, next) => {
   db.getFromCollection('Users', req.params.username)
-    .then(data => {
-      res.status(200).send({ Message: data });
-    })
-    .catch(reject => {
-      res.status(404).send({ Message: reject });
-    });
+    .then(data => { res.status(200).send({ Message: data }); })
+    .catch(reject => { res.status(404).send({ Message: reject }); });
 });
 
 /* ADD specific user. */
@@ -39,31 +31,25 @@ router.post('/', (req, res, next) => {
     req.body.password = hashedPassowrd;
     // save user only if password is hashed properly.
     db.saveToCollection('Users', req.body.username, req.body)
-    .then(event => {
-      res.status(201).send({ Message: 'User created.', Transaction: event });
-    })
-    .catch(reject => {
-      res.status(400).send({ Message: 'Failed to add user.', Error: reject });
-    });
+    .then(event => { res.status(201).send({ Message: 'User created.', Transaction: event }); })
+    .catch(reject => { res.status(400).send({ Message: 'Failed to add user.', Error: reject }); });
   })
-  .catch(reject => {
-    res.status(400).send({ Message: 'Failed to accept provided password.', Error: reject });    
-  })
+  .catch(reject => { res.status(400).send({ Message: 'Failed to accept provided password.', Error: reject }); })
   
 });
 
 /* Login */
-router.get('/login', (req,res,next) => {
+router.post('/login', (req,res,next) => {
   let username = req.body.username;
   let plainTextPassword = req.body.password;
 
   db.getFromCollection('Users', username)
   .then(data => {
-    console.log(data);
+    authentication.validatePassword(plainTextPassword, data.password)
+    .then(validity => { res.status(200).send({ Message: { Authentication: validity } }); })
+    .catch(invalidity => { res.status(200).send({ Message: { Authentication: invalidity } }); })
   })
-  .catch(reject => {
-    console.log(reject);
-  })
+  .catch(reject => { res.status(403).send({ Message: { Authentication: false } }); });
 })
 
 module.exports = router;
