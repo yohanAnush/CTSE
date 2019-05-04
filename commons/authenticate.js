@@ -13,4 +13,13 @@ let hashPassword = (plainTextPassword) => {
     });
 };
 
-module.exports = { hashPassword };
+let validatePassword = (plainTextPassword, hashedPasswordFromDb) => {
+    return new Promise((resolve, reject) => {
+        bcrypt.compare(plainTextPassword, hashedPasswordFromDb, (err, valid) => {
+            if (valid) resolve(valid);
+            else reject(false);
+        })
+    });
+};
+
+module.exports = { hashPassword, validatePassword };
